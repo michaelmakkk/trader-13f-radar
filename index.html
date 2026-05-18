@@ -3,28 +3,25 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Trader韭抄大佬作业雷达</title>
-  <meta name="description" content="整理 Trader韭常见的美股大佬抄作业视频线索，并用公开 13F 数据跟踪巴菲特、李录、Bill Ackman、David Tepper、Coatue、Tiger Global 等机构的季度持仓。">
-  <meta property="og:title" content="Trader韭抄大佬作业雷达">
-  <meta property="og:description" content="一个用公开 13F 数据跟踪大佬季度持仓的静态看板。">
+  <title>大佬最新持仓雷达</title>
+  <meta name="description" content="用公开 13F 数据跟踪巴菲特、李录、Bill Ackman、David Tepper、Coatue、Tiger Global 等投资大佬和机构的季度持仓。">
+  <meta property="og:title" content="大佬最新持仓雷达">
+  <meta property="og:description" content="一图看懂投资大佬和机构的季度 13F 持仓。">
   <meta property="og:type" content="website">
   <meta name="theme-color" content="#eef4f1">
   <style>
     :root {
-      --ink: #20231f;
-      --muted: #697064;
-      --line: #dce3d7;
-      --paper: #f7f8f2;
-      --panel: #ffffff;
-      --green: #22715a;
-      --blue: #315f9f;
-      --gold: #a66d14;
-      --red: #a7443c;
-      --mint: #dcefe8;
-      --sky: #e4edf9;
-      --sun: #f7e7c6;
-      --rose: #f3dfdc;
-      --shadow: 0 16px 40px rgba(43, 51, 38, 0.10);
+      --ink: #f7fff9;
+      --muted: #aeb8b2;
+      --line: rgba(112, 247, 166, 0.28);
+      --paper: #050706;
+      --panel: #0b0f0d;
+      --panel-2: #101713;
+      --green: #72f5a3;
+      --green-2: #37d976;
+      --red: #ff4f4f;
+      --yellow: #e9ff8d;
+      --shadow: 0 22px 70px rgba(0, 0, 0, 0.42);
     }
 
     * { box-sizing: border-box; }
@@ -33,7 +30,9 @@
       margin: 0;
       color: var(--ink);
       background:
-        linear-gradient(180deg, #f8faf4 0%, #eef4f1 48%, #f7f8f2 100%);
+        radial-gradient(circle at 18% 0%, rgba(90, 255, 158, 0.18), transparent 36%),
+        radial-gradient(circle at 78% 8%, rgba(233, 255, 141, 0.10), transparent 28%),
+        linear-gradient(180deg, #010201 0%, #07100b 42%, #050706 100%);
       font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
       line-height: 1.5;
     }
@@ -41,12 +40,12 @@
     a { color: inherit; }
 
     .shell {
-      width: min(1180px, calc(100% - 32px));
+      width: min(1240px, calc(100% - 32px));
       margin: 0 auto;
     }
 
     header {
-      padding: 34px 0 22px;
+      padding: 34px 0 24px;
       border-bottom: 1px solid var(--line);
     }
 
@@ -55,22 +54,25 @@
       justify-content: space-between;
       gap: 16px;
       align-items: center;
-      color: var(--muted);
+      color: var(--green);
       font-size: 14px;
     }
 
     h1 {
       margin: 22px 0 12px;
-      max-width: 860px;
-      font-size: clamp(34px, 5vw, 64px);
-      line-height: 1.02;
+      max-width: 940px;
+      font-size: clamp(40px, 7vw, 88px);
+      line-height: 0.96;
       letter-spacing: 0;
+      text-transform: uppercase;
     }
 
+    h1 span { color: var(--green); }
+
     .lead {
-      max-width: 850px;
+      max-width: 900px;
       margin: 0;
-      color: #42483e;
+      color: #d3ddd6;
       font-size: 18px;
     }
 
@@ -82,14 +84,14 @@
     }
 
     .metric, .card, .note, .source-box {
-      background: rgba(255, 255, 255, 0.84);
-      border: 1px solid rgba(220, 227, 215, 0.94);
+      background: linear-gradient(180deg, rgba(18, 26, 21, 0.96), rgba(8, 12, 10, 0.96));
+      border: 1px solid var(--line);
       box-shadow: var(--shadow);
     }
 
     .metric {
       padding: 18px;
-      border-radius: 8px;
+      border-radius: 10px;
     }
 
     .metric b {
@@ -99,6 +101,7 @@
       margin-bottom: 6px;
     }
 
+    .metric b { color: var(--green); }
     .metric span { color: var(--muted); font-size: 13px; }
 
     main { padding: 26px 0 54px; }
@@ -144,7 +147,7 @@
     .note ul {
       margin: 0;
       padding-left: 20px;
-      color: #394136;
+      color: #dce7df;
     }
 
     .note li + li { margin-top: 7px; }
@@ -162,8 +165,8 @@
 
     button {
       border: 1px solid var(--line);
-      background: #fff;
-      color: #394136;
+      background: #0f1512;
+      color: #dce7df;
       min-height: 36px;
       padding: 0 14px;
       border-radius: 8px;
@@ -171,9 +174,10 @@
     }
 
     button.active {
-      background: var(--ink);
-      color: #fff;
-      border-color: var(--ink);
+      background: var(--green);
+      color: #07100b;
+      border-color: var(--green);
+      font-weight: 800;
     }
 
     .search {
@@ -182,111 +186,257 @@
       border-radius: 8px;
       border: 1px solid var(--line);
       padding: 0 12px;
-      background: #fff;
+      background: #0f1512;
       color: var(--ink);
     }
 
     .cards {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
     }
 
     .card {
-      border-radius: 8px;
+      position: relative;
+      border-radius: 14px;
       overflow: hidden;
+      min-height: 720px;
+      padding: 22px;
+      background:
+        radial-gradient(circle at 18% 26%, rgba(114, 245, 163, 0.12), transparent 30%),
+        linear-gradient(180deg, #030504 0%, #0a0f0c 100%);
+      color: #fff;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 26px 26px;
+      mask-image: linear-gradient(180deg, rgba(0,0,0,0.45), transparent 72%);
+    }
+
+    .poster-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .poster-kicker {
       display: flex;
-      flex-direction: column;
-      min-height: 520px;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      color: #e7f7eb;
+      font-weight: 900;
+      font-size: 19px;
+      letter-spacing: 0;
     }
 
-    .card-top {
-      padding: 18px;
-      border-bottom: 1px solid var(--line);
-      background: linear-gradient(135deg, var(--tint), #fff 76%);
+    .poster-kicker span:last-child {
+      color: var(--green);
+      font-size: 14px;
     }
 
-    .tagline {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-bottom: 12px;
-    }
-
-    .tag {
-      border-radius: 999px;
-      padding: 4px 9px;
-      font-size: 12px;
-      color: #30372d;
-      background: rgba(255, 255, 255, 0.76);
-      border: 1px solid rgba(220, 227, 215, 0.78);
-    }
-
-    .card h3 {
+    .poster-title {
       margin: 0;
-      font-size: 22px;
-      line-height: 1.15;
+      font-size: clamp(34px, 5.3vw, 64px);
+      line-height: 0.92;
+      letter-spacing: 0;
+      font-weight: 950;
     }
 
-    .sub {
-      margin-top: 5px;
-      color: var(--muted);
-      font-size: 13px;
+    .poster-title .accent {
+      color: var(--green);
+      display: inline-block;
+      margin-right: 8px;
     }
 
-    .kv {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 8px;
-      margin-top: 14px;
-    }
-
-    .kv div {
-      padding: 10px;
+    .poster-strip {
+      margin: 14px 0 18px;
+      border: 1px solid var(--line);
       border-radius: 8px;
-      background: rgba(255, 255, 255, 0.72);
-      border: 1px solid rgba(220, 227, 215, 0.72);
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.42);
+      font-size: 23px;
+      font-weight: 900;
     }
 
-    .kv b {
-      display: block;
-      font-size: 15px;
-      white-space: nowrap;
+    .poster-strip b {
+      color: var(--green);
+      font-size: 34px;
     }
 
-    .kv span {
-      color: var(--muted);
-      font-size: 12px;
+    .poster-main {
+      display: grid;
+      grid-template-columns: 0.86fr 1.35fr;
+      gap: 18px;
+      align-items: start;
     }
 
-    .card-body {
-      padding: 16px 18px 18px;
-      flex: 1;
+    .profile {
       display: flex;
       flex-direction: column;
       gap: 14px;
     }
 
-    .mini-title {
-      margin: 0 0 8px;
-      color: #485044;
-      font-size: 13px;
+    .portrait {
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 3px solid var(--green);
+      background:
+        radial-gradient(circle at 36% 32%, rgba(255, 255, 255, 0.22), transparent 19%),
+        linear-gradient(145deg, #233228, #111814 56%, #070b09);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 0 0 8px rgba(114, 245, 163, 0.06);
+    }
+
+    .portrait span {
+      color: var(--green);
+      font-size: clamp(38px, 8vw, 82px);
+      font-weight: 950;
+      text-align: center;
+    }
+
+    .profile h3 {
+      margin: 0;
+      color: var(--green);
+      font-size: clamp(26px, 4vw, 42px);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    .profile .org {
+      margin: 4px 0 0;
+      color: #e7f2eb;
+      font-size: 14px;
+    }
+
+    .quote {
+      position: relative;
+      margin: 0;
+      padding: 13px 15px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      color: #e8f5ed;
+      background: rgba(0, 0, 0, 0.32);
       font-weight: 700;
     }
 
-    .holding {
-      display: grid;
-      grid-template-columns: 58px 1fr 54px;
-      gap: 8px;
-      align-items: center;
-      margin-bottom: 8px;
+    .quote::before, .quote::after {
+      color: var(--green);
+      font-size: 26px;
+      line-height: 0;
+    }
+
+    .quote::before { content: "“ "; }
+    .quote::after { content: " ”"; }
+
+    .value-box {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 14px;
+      background: rgba(0, 0, 0, 0.34);
+      text-align: center;
+    }
+
+    .value-box .label {
+      color: #e7f2eb;
+      font-weight: 800;
+    }
+
+    .value-box .value {
+      color: var(--green);
+      font-size: clamp(38px, 6vw, 56px);
+      line-height: 0.96;
+      font-weight: 950;
+      margin-top: 8px;
+    }
+
+    .value-box .subline {
+      margin-top: 8px;
+      padding-top: 9px;
+      border-top: 1px solid rgba(255,255,255,0.14);
+      color: var(--muted);
       font-size: 13px;
     }
 
+    .holdings-head, .holding {
+      display: grid;
+      grid-template-columns: 34px 62px minmax(92px, 1fr) minmax(120px, 1.35fr) 66px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .holdings-head {
+      color: #a8b7ad;
+      font-size: 12px;
+      margin: 0 0 6px;
+    }
+
+    .holding {
+      min-height: 48px;
+      margin-bottom: 7px;
+      padding: 7px 9px;
+      border-radius: 8px;
+      background: linear-gradient(180deg, rgba(18, 23, 20, 0.98), rgba(8, 10, 9, 0.98));
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+      font-size: 13px;
+    }
+
+    .rank {
+      color: var(--green);
+      font-size: 24px;
+      font-weight: 950;
+      text-align: center;
+    }
+
+    .ticker-badge {
+      width: 48px;
+      height: 38px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      color: #061008;
+      background: var(--logo-bg);
+      font-size: 13px;
+      font-weight: 950;
+      overflow-wrap: anywhere;
+      text-align: center;
+      padding: 2px;
+    }
+
+    .ticker-name b {
+      display: block;
+      color: #fff;
+      font-size: 18px;
+      line-height: 1;
+      overflow-wrap: anywhere;
+    }
+
+    .ticker-name span {
+      display: block;
+      margin-top: 3px;
+      color: #aab4ae;
+      font-size: 11px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
     .bar {
-      height: 9px;
-      border-radius: 999px;
-      background: #e8ede3;
+      height: 17px;
+      border-radius: 0;
+      background: rgba(255, 255, 255, 0.10);
       overflow: hidden;
     }
 
@@ -294,58 +444,81 @@
       display: block;
       height: 100%;
       width: var(--w);
-      background: var(--accent);
-      border-radius: inherit;
+      background: linear-gradient(90deg, var(--green), #a4ffc3);
     }
 
-    .move {
+    .weight {
+      color: #fff;
+      font-size: 17px;
+      font-weight: 900;
+      text-align: right;
+    }
+
+    .poster-foot {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.26);
+    }
+
+    .insight {
+      min-height: 82px;
+      display: flex;
+      gap: 9px;
+      align-items: flex-start;
+      border-right: 1px solid rgba(255,255,255,0.18);
+      padding-right: 10px;
+    }
+
+    .insight:last-child { border-right: 0; }
+
+    .insight-icon {
+      flex: 0 0 30px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      border: 2px solid var(--green);
+      color: var(--green);
+      font-weight: 950;
+    }
+
+    .insight b {
+      display: block;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .insight span {
+      color: var(--green);
+      font-weight: 900;
+    }
+
+    .insight p {
       margin: 0;
-      padding-left: 18px;
-      color: #3d4439;
+      color: #d5ded8;
       font-size: 13px;
     }
 
-    .move li + li { margin-top: 6px; }
-
     .source-link {
-      margin-top: auto;
+      margin-top: 14px;
       display: inline-flex;
       width: fit-content;
       align-items: center;
+      justify-content: center;
       min-height: 32px;
       padding: 0 10px;
       border-radius: 8px;
       border: 1px solid var(--line);
       text-decoration: none;
       font-size: 13px;
-      color: #26332e;
-      background: #fff;
-    }
-
-    .video-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .video-item {
-      min-height: 126px;
-      padding: 15px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fff;
-    }
-
-    .video-item b {
-      display: block;
-      margin-bottom: 7px;
-      font-size: 15px;
-    }
-
-    .video-item p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 13px;
+      color: var(--green);
+      background: rgba(0, 0, 0, 0.36);
     }
 
     .overlap {
@@ -357,7 +530,7 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      background: #fff;
+      background: #0d130f;
       border: 1px solid var(--line);
       border-radius: 8px;
       overflow: hidden;
@@ -373,9 +546,9 @@
     }
 
     th {
-      background: #eef4ed;
+      background: #111a15;
       font-size: 12px;
-      color: #4f584b;
+      color: var(--green);
       text-transform: uppercase;
     }
 
@@ -384,7 +557,7 @@
     .source-box {
       border-radius: 8px;
       padding: 18px;
-      color: #40483d;
+      color: #dce7df;
       font-size: 14px;
     }
 
@@ -396,7 +569,8 @@
     .source-box li + li { margin-top: 6px; }
 
     @media (max-width: 980px) {
-      .metric-row, .cards, .video-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .metric-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .cards { grid-template-columns: 1fr; }
       .summary-grid, .overlap { grid-template-columns: 1fr; }
     }
 
@@ -404,9 +578,16 @@
       .shell { width: min(100% - 20px, 1180px); }
       header { padding-top: 20px; }
       .topline, .section-head { align-items: flex-start; flex-direction: column; }
-      .metric-row, .cards, .video-grid { grid-template-columns: 1fr; }
+      .metric-row, .cards { grid-template-columns: 1fr; }
       .card { min-height: auto; }
-      .holding { grid-template-columns: 52px 1fr 48px; }
+      .poster-main, .poster-foot { grid-template-columns: 1fr; }
+      .holdings-head { display: none; }
+      .holding { grid-template-columns: 30px 48px minmax(74px, 1fr) minmax(74px, 1fr) 58px; padding: 6px; }
+      .ticker-badge { width: 40px; height: 34px; font-size: 11px; }
+      .ticker-name b { font-size: 15px; }
+      .weight { font-size: 14px; }
+      .insight { border-right: 0; border-bottom: 1px solid rgba(255,255,255,0.14); padding-bottom: 10px; }
+      .insight:last-child { border-bottom: 0; }
       th, td { padding: 10px; }
     }
   </style>
@@ -415,13 +596,13 @@
   <header>
     <div class="shell">
       <div class="topline">
-        <span>Trader韭内容整理 · 13F季度持仓跟踪</span>
+        <span>13F季度持仓跟踪 · 大佬组合雷达</span>
         <span>快照日期：2026-05-18</span>
       </div>
-      <h1>抄大佬作业，不只看标题，先看他们到底买了什么</h1>
-      <p class="lead">这个页面把 Trader韭常做的“美股大佬抄作业”视频线索，整理成大佬地图和季度持仓看板。当前以公开可核验的 SEC 13F 数据为主，适合每季更新一次。</p>
+      <h1><span>一图看懂</span> 大佬最新持仓</h1>
+      <p class="lead">用公开 13F 数据把投资大佬和机构的季度持仓做成信息图卡片：看重仓、看集中度、看本季调仓，再决定哪些线索值得继续研究。</p>
       <div class="metric-row">
-        <div class="metric"><b>10</b><span>已整理的大佬/机构线索</span></div>
+        <div class="metric"><b>9</b><span>已整理的大佬/机构组合</span></div>
         <div class="metric"><b>Q1 2026</b><span>多数美股大佬最新披露季</span></div>
         <div class="metric"><b>2026-08-14</b><span>Q2 2026 13F大致披露截止日</span></div>
         <div class="metric"><b>T+45</b><span>13F通常在季末后45天内披露</span></div>
@@ -432,21 +613,21 @@
   <main class="shell">
     <section>
       <div class="section-head">
-        <h2>Trader韭喜欢发什么“抄作业”视频</h2>
-        <div class="hint">基于公开可索引的东方财富、B站、小红书镜像结果整理。小红书站内内容不一定被完整索引，所以这里按“能核验的系列线索”归类。</div>
+        <h2>阅读口径</h2>
+        <div class="hint">13F适合观察公开披露的美股多头仓位，但它不是实时账户，也不是完整资产负债表。</div>
       </div>
       <div class="summary-grid">
         <div class="note">
-          <h3>选题偏好</h3>
+          <h3>看什么</h3>
           <ul>
-            <li>围绕季度 13F 披露做“最新持仓曝光”：谁加仓、谁减仓、谁清仓。</li>
-            <li>更爱有强人设的大佬：巴菲特、李录、Bill Ackman、David Tepper、Tiger系基金经理。</li>
-            <li>常把宏观叙事和重仓股连起来：AI半导体、云计算、中概互联网、消费龙头、价值股。</li>
-            <li>标题通常是“美股大佬抄作业：某机构/某大佬”，或者“某某最新持仓曝光”。</li>
+            <li>前几大持仓：判断组合真正押注的方向。</li>
+            <li>前两大集中度：看组合是高度集中，还是分散配置。</li>
+            <li>本季动作：新买、加仓、减仓、清仓通常比静态持仓更有信息量。</li>
+            <li>重仓交集：多位大佬共同重仓时，值得同时复核估值与拥挤度。</li>
           </ul>
         </div>
         <div class="note">
-          <h3>需要小心的地方</h3>
+          <h3>别误读</h3>
           <ul>
             <li>13F只披露美股多头等指定证券，不披露空头、现金、海外本地股票和多数衍生品。</li>
             <li>披露有最多45天延迟，看到时已经不是实时仓位。</li>
@@ -458,17 +639,9 @@
 
     <section>
       <div class="section-head">
-        <h2>大佬地图</h2>
-        <div class="hint">这些是视频线索里最值得跟踪的主体。可以把它理解成“素材库”，每季 13F 出来后更新一次。</div>
-      </div>
-      <div id="videoGrid" class="video-grid"></div>
-    </section>
-
-    <section>
-      <div class="section-head">
         <div>
-          <h2>季度持仓看板</h2>
-          <div class="hint">卡片显示每位大佬最新可核验季度、组合规模、前十大或前五大重仓、以及本季动作。</div>
+          <h2>持仓海报</h2>
+          <div class="hint">每张卡片按“一图看懂”样式展示组合规模、重仓占比、持仓列表和本季动作。</div>
         </div>
         <div class="toolbar">
           <div class="chips" id="filters"></div>
@@ -506,7 +679,7 @@
     <section>
       <div class="source-box">
         <b>数据来源与口径</b>
-        <p>持仓来自 SEC 13F 及第三方聚合页；页面内链接保留到具体机构或大佬页面，方便下一季复核。视频线索来自公开搜索可见的 Trader韭同步内容，未登录小红书情况下不能保证覆盖全量笔记。本页面仅用于资料整理和研究，不构成任何投资建议。</p>
+        <p>持仓来自 SEC 13F 及第三方聚合页；页面内链接保留到具体机构或大佬页面，方便下一季复核。本页面仅用于资料整理和研究，不构成任何投资建议。</p>
         <ol>
           <li><a href="https://www.sec.gov/divisions/investment/13ffaq" target="_blank" rel="noreferrer">SEC Form 13F FAQ</a></li>
           <li><a href="https://www.optionar.com/sec-13f/manager/0001067983-berkshire-hathaway-inc" target="_blank" rel="noreferrer">Berkshire Hathaway 13F summary</a></li>
@@ -524,23 +697,13 @@
   </main>
 
   <script>
-    const videoTopics = [
-      { name: "伯克希尔 / 巴菲特", note: "最典型的价值投资抄作业对象；适合跟踪苹果、美国运通、可口可乐、银行与能源。", status: "SEC 13F稳定" },
-      { name: "Appaloosa / David Tepper", note: "高换手、逆向和事件驱动味道更重；Trader韭素材里常和AI、中概、周期股放在一起看。", status: "SEC 13F稳定" },
-      { name: "Coatue / Philippe Laffont", note: "Tiger系成长股代表，重点看AI基础设施、半导体、云和平台型公司。", status: "SEC 13F稳定" },
-      { name: "Tiger Global / Chase Coleman", note: "同属Tiger系，和Coatue、Altimeter等有明显持仓重叠，适合看成长股拥挤度。", status: "SEC 13F稳定" },
-      { name: "Pershing Square / Bill Ackman", note: "集中持仓、激进股东风格；季度变化容易成为短视频标题。", status: "SEC 13F稳定" },
-      { name: "Himalaya Capital / 李录", note: "集中价值投资，和芒格、巴菲特叙事天然相连；中概和金融股关注度高。", status: "SEC 13F稳定" },
-      { name: "HHLR / 高瓴张磊", note: "中概、医药、互联网和新消费线索多；适合和李录、Tepper的中概持仓交叉看。", status: "SEC 13F稳定" },
-      { name: "Baillie Gifford", note: "长线成长机构，常见重仓为NVDA、MELI、SE、AMZN等全球成长股。", status: "披露频率较特殊" },
-      { name: "FMR / Fidelity", note: "超大规模机构盘，适合观察机构共识，不太适合直接当作单一大佬作业。", status: "SEC 13F稳定" },
-      { name: "段永平", note: "公开视频常和李录一起被提到；但个人仓位没有统一SEC季报口径，适合做人工跟踪卡。", status: "需人工核验" }
-    ];
-
     const managers = [
       {
         id: "buffett",
         name: "Warren Buffett",
+        shortName: "巴菲特",
+        initials: "WB",
+        quote: "长期持有优秀企业，现金流和护城河是核心线索",
         org: "Berkshire Hathaway",
         style: "价值 / 集中 / 现金流",
         category: "value",
@@ -565,6 +728,9 @@
       {
         id: "ackman",
         name: "Bill Ackman",
+        shortName: "阿克曼",
+        initials: "BA",
+        quote: "集中押注少数高质量公司，组合变化往往信号很强",
         org: "Pershing Square",
         style: "激进股东 / 集中",
         category: "activist",
@@ -589,6 +755,9 @@
       {
         id: "tepper",
         name: "David Tepper",
+        shortName: "泰珀",
+        initials: "DT",
+        quote: "逆向和事件驱动并重，调仓速度比价值派更快",
         org: "Appaloosa",
         style: "逆向 / 事件驱动",
         category: "growth",
@@ -613,6 +782,9 @@
       {
         id: "coatue",
         name: "Philippe Laffont",
+        shortName: "拉丰",
+        initials: "PL",
+        quote: "沿着AI基础设施和成长主线寻找高质量平台",
         org: "Coatue Management",
         style: "AI / 成长 / Tiger系",
         category: "growth",
@@ -637,6 +809,9 @@
       {
         id: "tiger",
         name: "Chase Coleman",
+        shortName: "Coleman",
+        initials: "CC",
+        quote: "Tiger系成长股视角，平台、AI和全球互联网是主线",
         org: "Tiger Global",
         style: "成长 / 互联网平台",
         category: "growth",
@@ -661,6 +836,9 @@
       {
         id: "lilu",
         name: "李录",
+        shortName: "李录",
+        initials: "LL",
+        quote: "集中价值投资，先看企业质量，再看价格和安全边际",
         org: "Himalaya Capital",
         style: "价值 / 集中 / 中概",
         category: "china",
@@ -685,6 +863,9 @@
       {
         id: "hhlr",
         name: "张磊 / HHLR",
+        shortName: "张磊",
+        initials: "ZL",
+        quote: "中概、医药和成长资产，是观察中国资产风险偏好的窗口",
         org: "HHLR Advisors",
         style: "中概 / 医药 / 成长",
         category: "china",
@@ -706,6 +887,9 @@
       {
         id: "baillie",
         name: "Baillie Gifford",
+        shortName: "BG",
+        initials: "BG",
+        quote: "用长期成长视角持有全球创新型公司",
         org: "Baillie Gifford & Co",
         style: "长线成长 / 全球",
         category: "institution",
@@ -727,6 +911,9 @@
       {
         id: "fmr",
         name: "FMR / Fidelity",
+        shortName: "FMR",
+        initials: "FM",
+        quote: "超大机构组合，更适合观察市场共识和资金温度",
         org: "FMR LLC",
         style: "超大机构 / 共识盘",
         category: "institution",
@@ -758,16 +945,6 @@
 
     let activeCategory = "all";
 
-    function renderVideoGrid() {
-      document.getElementById("videoGrid").innerHTML = videoTopics.map(item => `
-        <article class="video-item">
-          <b>${item.name}</b>
-          <p>${item.note}</p>
-          <p style="margin-top:10px;color:#26332e;">${item.status}</p>
-        </article>
-      `).join("");
-    }
-
     function renderFilters() {
       const el = document.getElementById("filters");
       el.innerHTML = categories.map(([id, label]) => `<button class="${id === activeCategory ? "active" : ""}" data-cat="${id}">${label}</button>`).join("");
@@ -794,38 +971,55 @@
       const rows = filteredManagers();
       document.getElementById("cards").innerHTML = rows.map(m => {
         const max = Math.max(...m.holdings.map(h => h[2]), 1);
-        const holdings = m.holdings.map(([ticker, name, weight]) => {
+        const topTwo = m.holdings.slice(0, 2).reduce((sum, h) => sum + (h[2] || 0), 0);
+        const weighted = m.holdings.filter(h => h[2] > 0);
+        const topTheme = weighted.length ? `${m.holdings[0][0]} + ${m.holdings[1]?.[0] || "Top"}` : "披露Top持仓";
+        const logoColors = ["#ffffff", "#7af0a7", "#ff6b6b", "#7dd3fc", "#fbbf24", "#c4b5fd", "#fb923c"];
+        const holdings = m.holdings.map(([ticker, name, weight], index) => {
           const width = weight ? Math.max(8, Math.round(weight / max * 100)) : 18;
+          const logoBg = logoColors[index % logoColors.length];
           return `
             <div class="holding">
-              <b>${ticker}</b>
-              <div class="bar" title="${name}${weight ? ` · ${weight}%` : ""}"><span style="--w:${width}%; --accent:${m.accent};"></span></div>
-              <span>${weight ? `${weight}%` : "Top"}</span>
+              <div class="rank">${index + 1}</div>
+              <div class="ticker-badge" style="--logo-bg:${logoBg};">${ticker.slice(0, 4)}</div>
+              <div class="ticker-name"><b>${ticker}</b><span>${name}</span></div>
+              <div class="bar" title="${name}${weight ? ` · ${weight}%` : ""}"><span style="--w:${width}%;"></span></div>
+              <div class="weight">${weight ? `${weight.toFixed(2)}%` : "Top"}</div>
             </div>
           `;
         }).join("");
         return `
-          <article class="card" style="--tint:${m.tint}; --accent:${m.accent};">
-            <div class="card-top">
-              <div class="tagline"><span class="tag">${m.style}</span><span class="tag">${m.quarter}</span></div>
-              <h3>${m.name}</h3>
-              <div class="sub">${m.org}</div>
-              <div class="kv">
-                <div><b>${m.value}</b><span>组合规模</span></div>
-                <div><b>${m.holdingsCount}</b><span>披露持仓</span></div>
-                <div><b>${m.filed}</b><span>披露日期</span></div>
+          <article class="card">
+            <div class="poster-content">
+              <div class="poster-kicker"><span>一图看懂</span><span>${m.quarter}</span></div>
+              <h3 class="poster-title"><span class="accent">${m.shortName}</span>最新持仓</h3>
+              <div class="poster-strip"><b>${topTwo ? `${topTwo.toFixed(0)}%` : m.holdingsCount}</b><span>${topTwo ? "前2大重仓占比" : "披露持仓数量"}</span></div>
+              <div class="poster-main">
+                <aside class="profile">
+                  <div class="portrait"><span>${m.initials}</span></div>
+                  <div>
+                    <h3>${m.shortName}</h3>
+                    <p class="org">${m.org}</p>
+                  </div>
+                  <p class="quote">${m.quote}</p>
+                  <div class="value-box">
+                    <div class="label">组合总市值</div>
+                    <div class="value">${m.value}</div>
+                    <div class="subline">披露持仓 ${m.holdingsCount} 只 · ${m.filed}</div>
+                  </div>
+                </aside>
+                <div class="holdings">
+                  <div class="holdings-head"><span></span><span></span><span>股票</span><span>持仓占比</span><span></span></div>
+                  ${holdings}
+                </div>
               </div>
-            </div>
-            <div class="card-body">
-              <div>
-                <p class="mini-title">重仓</p>
-                ${holdings}
+              <div class="poster-foot">
+                <div class="insight"><div class="insight-icon">◎</div><div><b>集中度</b><p>${topTwo ? `前2大重仓 <span>${topTwo.toFixed(2)}%</span>` : "未披露具体占比"}</p></div></div>
+                <div class="insight"><div class="insight-icon">AI</div><div><b>主线</b><p>${topTheme}</p></div></div>
+                <div class="insight"><div class="insight-icon">+</div><div><b>本季动作</b><p>${m.moves[0]}</p></div></div>
+                <div class="insight"><div class="insight-icon" style="border-color:var(--red);color:var(--red);">!</div><div><b>风险提示</b><p>13F延迟披露，不含空头和现金</p></div></div>
               </div>
-              <div>
-                <p class="mini-title">本季看点</p>
-                <ul class="move">${m.moves.map(x => `<li>${x}</li>`).join("")}</ul>
-              </div>
-              <a class="source-link" href="${m.source}" target="_blank" rel="noreferrer">打开来源</a>
+              <a class="source-link" href="${m.source}" target="_blank" rel="noreferrer">数据来源：13F / 打开详情</a>
             </div>
           </article>
         `;
@@ -853,7 +1047,6 @@
       renderOverlap();
     });
 
-    renderVideoGrid();
     renderFilters();
     renderCards();
     renderOverlap();
